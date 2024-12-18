@@ -3,26 +3,44 @@ version: 2.1
 executors:
   node-executor:
     docker:
-      - image: circleci/node:14
+      - image: circleci/node:16 # Use a Node.js image, make sure it matches your Node version
 
 jobs:
   test:
     executor: node-executor
     steps:
+      # Step 1: Checkout the repository
       - checkout
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "package-lock.json" }}
+
+      # Step 2: Install dependencies
       - run:
           name: Install Dependencies
-          command: npm ci
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package-lock.json" }}
+          command: npm install
+
+      # Step 3: Start the application in the background
+      - run:
+          name: Start Application
+          command: node index.js &
+
+      # Step 4: Wait for the application to start (sleep for 5 seconds)
+      - run:
+          name: Wait for Application to Start
+          command: sleep 5
+
+      # Step 5: Test the application using curl (output response)
+      - run:
+          name: Test Application with Curl
+          command: curl -v http://localhost:3000
+
+      # Step 6: Run the tests with verbose output
       - run:
           name: Run Tests
-          command: npm test
+          command: npm test --verbose
+
+      # Step 7: Store the test logs as artifacts
+      - store_artifacts:
+          path: test.log
+          destination: test_logs
 
 workflows:
   version: 2

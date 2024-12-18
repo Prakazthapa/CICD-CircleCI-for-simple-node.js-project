@@ -1,6 +1,4 @@
-console.log("Simple Node.js project using CircleCI");
-
-import express from "express";
+const express = require("express");
 const app = express();
 
 app.get("/", (req, res) => {

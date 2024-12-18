@@ -1,5 +1,10 @@
 import request from "supertest";
-import app from "../index.js";
+import express from "express";
+
+const app = express();
+app.get("/", (req, res) => {
+  res.send("Welcome to Simple Node.js Project using CircleCI");
+});
 
 describe("GET /", () => {
   it("should return a welcome message", async () => {

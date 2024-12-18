@@ -1,3 +1,5 @@
+import jestConfig from "./jest.config";
+
 const express = require("express");
 const app = express();
 
